@@ -1,5 +1,5 @@
 
-ActionCache - A high performance cache server based by "Action" framework network
+ActionCache - A high performance cache server based on "Action" network framework
 with a goal of 100w QPS per instance, which are both designed and developed by Liyinlong.
 Copyright (c) 2015, Liyinlong.  All rights reserved.
 https://github.com/Jacklli/ActionCache
