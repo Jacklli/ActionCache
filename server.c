@@ -66,7 +66,7 @@ int mainLoop(Server *server) {
 /* main loop */
     while(1) {
         tvp.tv_sec = 0;
-        tvp.tv_usec = 1;
+        tvp.tv_usec = 10;
         numevents = 0;
         numevents = aePollPoll(server->eLoop, &tvp);
         for (j = 0; j < numevents; j++) {

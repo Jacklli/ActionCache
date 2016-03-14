@@ -24,7 +24,7 @@
 #define SERVPORT 33060
 #define SERVIP   "127.0.0.1"
 #define MAXDATASIZE 100
-#define THREADCNT 10
+#define THREADCNT 3
 
 typedef struct args {
     int arg1;//参数1 
