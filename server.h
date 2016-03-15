@@ -19,7 +19,7 @@
 #include "object.h"
 
 /* refers to your CPU count */
-#define THREADCNT 2
+#define THREADCNT 10
 #define PORT      33060
 #define READABLE 1
 

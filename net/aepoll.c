@@ -87,7 +87,7 @@ int aePollPoll(eventLoop *eLoop, struct timeval *tm) {
     int retval = 0, numevents = 0;
 
 //    retval = epoll_wait(state->epfd,state->events,eLoop->setsize,tm ? (tm->tv_sec*1000 + tm->tv_usec/1000) : -1);
-    retval = epoll_wait(state->epfd,state->events,eLoop->setsize,10000);
+    retval = epoll_wait(state->epfd,state->events,eLoop->setsize,5000);
     if (retval > 0) {
         int j;
 

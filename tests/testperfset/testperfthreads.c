@@ -24,7 +24,7 @@
 #define SERVPORT 33060
 #define SERVIP   "127.0.0.1"
 #define MAXDATASIZE 100
-#define THREADCNT 3
+#define THREADCNT 15
 
 typedef struct args {
     int arg1;//参数1 
@@ -84,16 +84,16 @@ char *errmsg = NULL;
 }
 int main() {
     int i = 0, j = 0, m = 0;
-    pthread_t tid[10];
+    pthread_t tid[THREADCNT];
     struct timeval tstart,tend;
     float timeuse;
     gettimeofday(&tstart,NULL);
 
 printf("\n\n");
-printf("start set test with 10 threads.\n");
+printf("start set test with %d threads.\n", THREADCNT);
 
     args *myarg = NULL;
-    for(m = 0; m < 10; m++) {
+    for(m = 0; m < THREADCNT; m++) {
         myarg = malloc(sizeof(*myarg));
         myarg->arg1 = m*1000000;
         myarg->arg2 = (m+1)*1000000;
@@ -101,13 +101,13 @@ printf("start set test with 10 threads.\n");
 //        printf("myarg->arg2 is:%d\n",myarg->arg2);
         pthread_create(&tid[m], NULL, doTest, (void *)myarg);
     }
-    for(i = 0;i<10;i++) {
+    for(i = 0;i<THREADCNT;i++) {
         pthread_join(tid[i], NULL);
     }
     gettimeofday(&tend,NULL);
     timeuse=1000000*(tend.tv_sec-tstart.tv_sec)+(tend.tv_usec-tstart.tv_usec);
     timeuse/=1000000;
-    printf("15000000 keys get finished in %f seconds\n",timeuse);
-    printf("########  The test QPS for get is:%d  #########\n\n\n",(int)(10000000/timeuse));
+    printf("%d keys get finished in %f seconds\n", THREADCNT*1000000, timeuse);
+    printf("########  The test QPS for get is:%d  #########\n\n\n",(int)(THREADCNT*1000000/timeuse));
     return 1;
 }

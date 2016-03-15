@@ -8,4 +8,4 @@ testperf.o: testperf.c
 testlog.o: ../log/log.c ../log/log.h testlog.c
 	gcc $(CFLAGS) -g -o testlog.o ../log/log.c testlog.c
 clean:
-	rm -rf *.o
+	rm -rf *.o testperfget/*.o testperfset/*.o
