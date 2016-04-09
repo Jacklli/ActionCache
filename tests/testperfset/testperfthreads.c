@@ -108,6 +108,6 @@ printf("start set test with %d threads.\n", THREADCNT);
     timeuse=1000000*(tend.tv_sec-tstart.tv_sec)+(tend.tv_usec-tstart.tv_usec);
     timeuse/=1000000;
     printf("%d keys get finished in %f seconds\n", THREADCNT*1000000, timeuse);
-    printf("########  The test QPS for get is:%d  #########\n\n\n",(int)(THREADCNT*1000000/timeuse));
+    printf("########  The test QPS for set is:%d  #########\n\n\n",(int)(THREADCNT*1000000/timeuse));
     return 1;
 }
