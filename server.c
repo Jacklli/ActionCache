@@ -71,7 +71,7 @@ cpu_set_t mask;
     cpuSeq = (eloopid - 1) % cpuNum;
 
 CPU_ZERO(&mask);      
-CPU_SET(cpuSeq, &mask);      //绑定到cpu eloopid,eloopid与server的线程序号相等
+CPU_SET(cpuSeq, &mask);      //绑定到cpuSeq号CPU,eloopid与server的线程序列号相等
 
 if(0 != pthread_setaffinity_np(pthread_self(), sizeof(mask), &mask) < 0) {
     printf("set affinity failed..\n");  
