@@ -65,7 +65,6 @@ cpu_set_t mask;
     server->eLoop = globalEloop[eloopid];
     server->tree = globalconnTree[eloopid];
     eloopid++;
-    pthread_mutex_unlock(&eloopidLock);
 
     cpuNum = sysconf(_SC_NPROCESSORS_CONF);
     printf("cpuNum is:%d\n", cpuNum);
@@ -74,7 +73,7 @@ cpu_set_t mask;
 CPU_ZERO(&mask);      
 CPU_SET(cpuSeq, &mask);      //绑定到cpu eloopid,eloopid与server的线程序号相等
 
-if(pthread_setaffinity_np(pthread_self(), sizeof(mask), &mask) == -1) {
+if(0 != pthread_setaffinity_np(pthread_self(), sizeof(mask), &mask) < 0) {
     printf("set affinity failed..\n");  
     strerror(errno);
     printf("err msg is: %d\n", errno);
@@ -82,7 +81,7 @@ if(pthread_setaffinity_np(pthread_self(), sizeof(mask), &mask) == -1) {
 
 CPU_ZERO(&mask);  
 
-if(pthread_getaffinity_np(pthread_self(), sizeof(mask), &mask) == -1) {
+if(0 != pthread_getaffinity_np(pthread_self(), sizeof(mask), &mask) < 0) {
     printf("get affinity failed..\n");  
 }
 
@@ -92,6 +91,9 @@ if(CPU_ISSET(cpuSeq, &mask)) {
 } else {
     printf("set CPU fialed\n");
 }
+
+
+    pthread_mutex_unlock(&eloopidLock);
     return server;
 
 }
@@ -130,7 +132,7 @@ void *runServer() {
 }
 
 void *serverCron() {
-    int i = 0, keys = 0;
+    int i = 0, keys = 0, keys_before = 0;
     while(1) {
         keys = 0;
         for(i = 0;i < THREADCNT; i++) {
@@ -138,7 +140,8 @@ void *serverCron() {
                 keys += dictSize(db[i]);
            }
         }
-        writeLog(1, "There are %d keys stored.", keys);
+        writeLog(1, "There are %d keys stored, QPS is: %d", keys, (keys-keys_before)/2);
+        keys_before = keys;
         usleep(2000000);
     }
 }
