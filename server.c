@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include <errno.h>
 
 #include "buffer.h"
 #include "event.h"
@@ -46,25 +47,11 @@ extern dictType dDictType;
 Server *initServerPrivate() {
     pthread_attr_t pattr;
     size_t size = 0;
+    int cpuNum = 0;
+    int cpuSeq = 0;
+    char *message = NULL;
 
 cpu_set_t mask;
-CPU_ZERO(&mask);      
-CPU_SET(eloopid, &mask);      //绑定到cpu eloopid,eloopid与server的线程序号相等
-
-if(pthread_setaffinity_np(pthread_self(), sizeof(mask), &mask) == -1) {     //0 代表对当前线程/进程进行设置。  
-    printf("set affinity failed..\n");  
-}
-
-CPU_ZERO(&mask);  
-
-if(pthread_getaffinity_np(pthread_self(), sizeof(mask), &mask) == -1) {
-    printf("get affinity failed..\n");  
-}
-
-if(CPU_ISSET(eloopid, &mask))
-    printf("new thread %d run on processor %d\n", pthread_self(), eloopid);
-else
-    printf("set CPU fialed\n");
 
     Server *server = (Server *)malloc(sizeof(struct Server));
     //init server network
@@ -80,7 +67,33 @@ else
     eloopid++;
     pthread_mutex_unlock(&eloopidLock);
 
+    cpuNum = sysconf(_SC_NPROCESSORS_CONF);
+    printf("cpuNum is:%d\n", cpuNum);
+    cpuSeq = (eloopid - 1) % cpuNum;
+
+CPU_ZERO(&mask);      
+CPU_SET(cpuSeq, &mask);      //绑定到cpu eloopid,eloopid与server的线程序号相等
+
+if(pthread_setaffinity_np(pthread_self(), sizeof(mask), &mask) == -1) {
+    printf("set affinity failed..\n");  
+    strerror(errno);
+    printf("err msg is: %d\n", errno);
+}
+
+CPU_ZERO(&mask);  
+
+if(pthread_getaffinity_np(pthread_self(), sizeof(mask), &mask) == -1) {
+    printf("get affinity failed..\n");  
+}
+
+if(CPU_ISSET(cpuSeq, &mask)) {
+    printf("new thread %d run on processor %d\n", pthread_self(), cpuSeq);
+
+} else {
+    printf("set CPU fialed\n");
+}
     return server;
+
 }
 
 int mainLoop(Server *server) {
