@@ -50,9 +50,7 @@ Server *initServerPrivate() {
     int cpuNum = 0;
     int cpuSeq = 0;
     char *message = NULL;
-
     cpu_set_t mask;
-
     Server *server = (Server *)malloc(sizeof(struct Server));
     //init server network
     server->neterr = NULL;
@@ -65,11 +63,9 @@ Server *initServerPrivate() {
     server->eLoop = globalEloop[eloopid];
     server->tree = globalconnTree[eloopid];
     eloopid++;
-
     cpuNum = sysconf(_SC_NPROCESSORS_CONF);
     printf("cpuNum is:%d\n", cpuNum);
     cpuSeq = (eloopid - 1) % cpuNum;
-
     CPU_ZERO(&mask);      
     CPU_SET(cpuSeq, &mask);      //绑定到cpuSeq号CPU,eloopid与server的线程序列号相等
 
@@ -78,19 +74,15 @@ Server *initServerPrivate() {
         strerror(errno);
         printf("err msg is: %d\n", errno);
     }
-
     CPU_ZERO(&mask);  
-
     if(0 != pthread_getaffinity_np(pthread_self(), sizeof(mask), &mask) < 0) {
         printf("get affinity failed..\n");  
     }
-
     if(CPU_ISSET(cpuSeq, &mask)) {
         printf("new thread %d run on processor %d\n", pthread_self(), cpuSeq);
     } else {
         printf("set CPU fialed\n");
     }
-
     pthread_mutex_unlock(&eloopidLock);
     return server;
 }
