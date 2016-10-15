@@ -51,7 +51,7 @@ Server *initServerPrivate() {
     int cpuSeq = 0;
     char *message = NULL;
 
-cpu_set_t mask;
+    cpu_set_t mask;
 
     Server *server = (Server *)malloc(sizeof(struct Server));
     //init server network
@@ -70,32 +70,29 @@ cpu_set_t mask;
     printf("cpuNum is:%d\n", cpuNum);
     cpuSeq = (eloopid - 1) % cpuNum;
 
-CPU_ZERO(&mask);      
-CPU_SET(cpuSeq, &mask);      //绑定到cpuSeq号CPU,eloopid与server的线程序列号相等
+    CPU_ZERO(&mask);      
+    CPU_SET(cpuSeq, &mask);      //绑定到cpuSeq号CPU,eloopid与server的线程序列号相等
 
-if(0 != pthread_setaffinity_np(pthread_self(), sizeof(mask), &mask) < 0) {
-    printf("set affinity failed..\n");  
-    strerror(errno);
-    printf("err msg is: %d\n", errno);
-}
+    if(0 != pthread_setaffinity_np(pthread_self(), sizeof(mask), &mask) < 0) {
+        printf("set affinity failed..\n");  
+        strerror(errno);
+        printf("err msg is: %d\n", errno);
+    }
 
-CPU_ZERO(&mask);  
+    CPU_ZERO(&mask);  
 
-if(0 != pthread_getaffinity_np(pthread_self(), sizeof(mask), &mask) < 0) {
-    printf("get affinity failed..\n");  
-}
+    if(0 != pthread_getaffinity_np(pthread_self(), sizeof(mask), &mask) < 0) {
+        printf("get affinity failed..\n");  
+    }
 
-if(CPU_ISSET(cpuSeq, &mask)) {
-    printf("new thread %d run on processor %d\n", pthread_self(), cpuSeq);
-
-} else {
-    printf("set CPU fialed\n");
-}
-
+    if(CPU_ISSET(cpuSeq, &mask)) {
+        printf("new thread %d run on processor %d\n", pthread_self(), cpuSeq);
+    } else {
+        printf("set CPU fialed\n");
+    }
 
     pthread_mutex_unlock(&eloopidLock);
     return server;
-
 }
 
 int mainLoop(Server *server) {
