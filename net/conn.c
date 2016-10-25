@@ -60,16 +60,15 @@ conn *newConn(int fd, connTree *tree) {
         printf("init Buffer error!\n");
         return NULL;
     }
-    connection->commandCnt = 0;
+    connection->cmdCnt = 0;
     if((root = tree->ins(fd, connection, tree->root))) {
         tree->root = root;
         tree->connCnt += 1; 
         return connection;
     }
-    else {
-        return NULL;
-    }
+    return NULL;
 }
+
 int freeConn(int fd, connTree *tree) {
     rb_node_t *nd = NULL;
     conn *connection = NULL;
@@ -88,7 +87,6 @@ int freeConn(int fd, connTree *tree) {
         free(connection);
         if(tree->connCnt == 0) tree->root = NULL;
         writeLog(1, "connection fd %d closed.", fd);
-        return 1;
     }
     return 1;
 }

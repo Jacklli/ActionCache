@@ -167,10 +167,10 @@ int parseOneMessage(buffer *buf) {
 } 
 
 int decod(buffer *buf) {
-    int commandCnt = 0;
+    int cmdCnt = 0;
     valObject *obj = NULL;
-    commandCnt = catchOneMessagefromBuffer(buf) / 3;
-    return commandCnt;
+    cmdCnt = catchOneMessagefromBuffer(buf) / 3;
+    return cmdCnt;
 }
 int encod(buffer *buf, char **argv) {
     printf("TO DO: Call encod\n");

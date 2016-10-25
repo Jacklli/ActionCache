@@ -22,9 +22,7 @@
 typedef struct conn {
     int fd;
     buffer *buf;
-//    char **argv;
-//    int argvCnt;
-    int commandCnt;
+    int cmdCnt;
     dict *db;
     time_t ctime;           /* connection creation time */
     time_t lastinteraction; /* time of the last interaction, used for timeout */

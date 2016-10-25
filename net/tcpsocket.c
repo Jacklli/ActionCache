@@ -60,7 +60,7 @@ static int tcpRead(conn *connection, int fd, buffer *buf) {
             message = strerror(errno);
             return -1;
         }
-        connection->commandCnt = connection->decod(connection->buf);
+        connection->cmdCnt = connection->decod(connection->buf);
         connection->db = db[atoi(connection->buf->argv[1])%THREADCNT];
         while(connection->buf->parseFlag != 1 && connection->buf->parseFlag != -1) {     
             if(connection->buf->argv[0] && strcmp(connection->buf->argv[0], "set") ==0 ) {
@@ -82,7 +82,7 @@ static int tcpRead(conn *connection, int fd, buffer *buf) {
                     }
                 }
             }
-            connection->commandCnt = connection->decod(connection->buf);
+            connection->cmdCnt = connection->decod(connection->buf);
         }
     }
     return nread;
