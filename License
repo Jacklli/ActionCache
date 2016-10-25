@@ -1,12 +1,12 @@
 
-ActionCache - A high performance cache server based on "Action" network framework
+ActionCache - A high performance cache server based on "Action" network template
 with a goal of 100w QPS per instance, which are both designed and developed by Liyinlong.
 Copyright (c) 2015, Liyinlong.  All rights reserved.
 https://github.com/Jacklli/ActionCache
 
 NOTE:
     The only valid version of the GPL as far as the software
- is concerned is _this_ particular version of the license (ie v2, not
+ is concerned is __this__ particular version of the license (ie v2, not
  v2.2 or v3.x or whatever), unless explicitly otherwise stated.
 
 
