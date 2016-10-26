@@ -33,12 +33,14 @@ int aePollCreate(eventLoop *eLoop) {
     eLoop->apidata = state;
     return 1;
 }
+
 int aePollFree(eventLoop *eLoop) {
     aePoll *state = eLoop->apidata;
     close(state->epfd);
     free(state->events);
     free(state);
 }
+
 int aePollResize(eventLoop *eLoop, int setsize) {
     aePoll *state = eLoop->apidata;
     state->events = realloc(state->events, sizeof(struct epoll_event)*setsize);
@@ -46,6 +48,7 @@ int aePollResize(eventLoop *eLoop, int setsize) {
         return -1;
     return 1;
 }
+
 int aePollAddEvent(eventLoop *eLoop, int fd, int mask) {
     aePoll *state = eLoop->apidata;
     struct epoll_event ee;
@@ -64,6 +67,7 @@ int aePollAddEvent(eventLoop *eLoop, int fd, int mask) {
         return -1;
     return 1;
 }
+
 int aePollDeleteEvent(eventLoop *eLoop, int fd, int delmask) {
     aePoll *state = eLoop->apidata;
     struct epoll_event ee;
@@ -82,6 +86,7 @@ int aePollDeleteEvent(eventLoop *eLoop, int fd, int delmask) {
         epoll_ctl(state->epfd,EPOLL_CTL_DEL,fd,&ee);
     }
 }
+
 int aePollPoll(eventLoop *eLoop, struct timeval *tm) {
     aePoll *state = eLoop->apidata;
     int numEvents = 0;
