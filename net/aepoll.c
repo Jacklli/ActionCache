@@ -84,18 +84,15 @@ int aePollDeleteEvent(eventLoop *eLoop, int fd, int delmask) {
 }
 int aePollPoll(eventLoop *eLoop, struct timeval *tm) {
     aePoll *state = eLoop->apidata;
-    int retval = 0, numevents = 0;
+    int numEvents = 0;
 
-//    retval = epoll_wait(state->epfd,state->events,eLoop->setsize,tm ? (tm->tv_sec*1000 + tm->tv_usec/1000) : -1);
-    retval = epoll_wait(state->epfd,state->events,eLoop->setsize,5000);
-    if (retval > 0) {
+//    numevents = epoll_wait(state->epfd,state->events,eLoop->setsize,tm ? (tm->tv_sec*1000 + tm->tv_usec/1000) : -1);
+    numEvents = epoll_wait(state->epfd,state->events,eLoop->setsize,5000);
+    if (numEvents > 0) {
         int j;
-
-        numevents = retval;
-        for (j = 0; j < numevents; j++) {
+        for (j = 0; j < numEvents; j++) {
             int mask = 0;
             struct epoll_event *e = state->events+j;
-
             if (e->events & EPOLLIN) mask |= READABLE;
             if (e->events & EPOLLOUT) mask |= WRITEABLE;
             if (e->events & EPOLLERR) mask |= WRITEABLE;
@@ -104,5 +101,5 @@ int aePollPoll(eventLoop *eLoop, struct timeval *tm) {
             eLoop->fired[j].mask = mask;
         }
     }
-    return numevents;
+    return numEvents;
 }
